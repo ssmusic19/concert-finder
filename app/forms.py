@@ -6,6 +6,7 @@ from flask_login import current_user
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectMultipleField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from app.models import User
+import json
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min = 2, max = 20)])
@@ -62,8 +63,7 @@ class ConcertForm(FlaskForm):
                 return True
         return False
 
-    my_choices = []
-    with app.open_resource('static/performers.txt') as file:
+    """with app.open_resource('static/performers.txt') as file:
         i = 0
         for line in file:
             line = line.decode("utf-8")
@@ -71,5 +71,11 @@ class ConcertForm(FlaskForm):
             i += 1
             if i > 30000:
                 break
+    """
+    with app.open_resource('static/artists.json') as file:
+        my_choices = json.load(file)
+    my_choices = list(my_choices.keys())
+        
+    print(my_choices)
     artists = SelectMultipleField('Enter artists:', validators=[DataRequired()], choices = my_choices)
     submit = SubmitField('Find Concerts')
