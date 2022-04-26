@@ -11,6 +11,7 @@
                 {% for event in schedule %}
                     <li class="list-group-item">{{ event[1] }} 
                         <br> Date: {{ event[3] }} 
+                        <br> Location: {{ event[4] }}
                         <br> Tickets: <a target="_blank" href="{{event[2]}}">{{ event[2] }}</a>
                         <br> 
                         <form action="#" method="POST">
