@@ -75,7 +75,6 @@ class ConcertForm(FlaskForm):
     with app.open_resource('static/artists.json') as file:
         my_choices = json.load(file)
     my_choices = list(my_choices.keys())
-        
-    print(my_choices)
+    
     artists = SelectMultipleField('Enter artists:', validators=[DataRequired()], choices = my_choices)
     submit = SubmitField('Find Concerts')
