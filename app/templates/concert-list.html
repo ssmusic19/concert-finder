@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1>Concerts Near Me</h1>
+    <div>
+        <ul class="list-group">
+            {% if not events %}
+                <h4>No concerts found.
+                    <a href="{{url_for('home')}}">Please try another search.</a>
+                </h4>
+            {% else %}
+                {% for event in events %}
+                    <li class="list-group-item">{{ event[1] }} 
+                        <br> Date: {{ event[3] }} 
+                        <br> Tickets: <a target="_blank" href="{{event[2]}}">{{ event[2] }}</a>
+                        <br> 
+                        <form action="{{url_for('add_to_schedule')}}" method="GET">
+                            <input hidden name="text" value="{{event[0]}}">
+                            <input type="submit" value="Add to Schedule">
+                        </form>
+                {% endfor %}
+            {% endif %}
+        </ul>
+    </div>
+{% endblock content %}
