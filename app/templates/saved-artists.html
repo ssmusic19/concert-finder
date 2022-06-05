@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1 class="text-center">Saved Artists</h1>
+    <div>
+        <table id="artist-table" class="table table-striped">
+            <tbody>
+            {% if not artists %}
+                <h4>You have not saved any artists.
+                    <a href="{{url_for('home')}}">Search for an artist to follow!</a>
+                </h4>
+            {% else %}
+                {% for artist in artists %}
+                <tr>
+                    <th scope="row">{{ artist }}</th>
+                    <td>
+                        <form action="{{url_for('concert_list')}}?artists={{artist}}" method="POST">
+                            <input type="submit" value="View all upcoming events">
+                        </form>
+                    </td>
+                    <td>
+                        <form class="remove-artist">
+                            <input type="submit" value="Remove artist" class="btn-danger">
+                        </form>
+                    </td>
+                    </div>
+                </tr>
+                {% endfor %}
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+{% endblock content %}

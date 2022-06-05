@@ -1,8 +1,8 @@
 {% extends "layout.html" %}
 {% block content %}
-    <h1>My Schedule</h1>
+    <h1 class="text-center">My Schedule</h1>
     <div>
-        <ul class="list-group">
+        <ul class="list-group striped-list">
             {% if not schedule %}
                 <h4>You have no upcoming concerts scheduled.
                     <a href="{{url_for('home')}}">Search for a concert and add one to your schedule!</a>
@@ -12,11 +12,34 @@
                     <li class="list-group-item">{{ event[1] }} 
                         <br> Date: {{ event[3] }} 
                         <br> Location: {{ event[4] }}
-                        <br> Tickets: <a target="_blank" href="{{event[2]}}">{{ event[2] }}</a>
-                        <br> 
-                        <form action="#" method="POST">
-                            <input type="submit" value="Share on Twitter">
-                        </form>
+                        <div class="row">
+                            <div class="col-sm-auto">
+                                <button type="button" class="btn-primary" onclick="window.open('{{event[2]}}', 'popUpWindow','height=800,width=1200,left=10,top=10,scrollbars=yes,menubar=no'); return false;">Tickets</button>
+                            </div>
+                            <div class="col-sm-auto">
+                                <a target="_blank" 
+                                   class="twitter-share-button" 
+                                   href="https://twitter.com/intent/tweet?text=I&#39;m going to see {{event[1]}}!&url={{event[2]}}" 
+                                   data-size="large">Tweet</a>
+                            </div>
+                            <div class="col-sm-auto">
+                                <iframe src="https://www.facebook.com/plugins/share_button.php?href={{event[2]}}&layout=button&size=large&width=77&height=28&appId" 
+                                        width="77" 
+                                        height="28" 
+                                        style="border:none;overflow:hidden" 
+                                        scrolling="no" 
+                                        frameborder="0" 
+                                        allowfullscreen="true" 
+                                        allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                                ></iframe>
+                            </div>
+                            <div class="col-sm-auto">
+                                <form class="remove-event">
+                                    <input hidden value="{{event[0]}}">
+                                    <input type="submit" value="Remove event" class="btn-danger">
+                                </form>
+                            </div>
+                        </div>
                 {% endfor %}
             {% endif %}
         </ul>

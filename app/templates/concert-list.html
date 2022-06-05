@@ -2,7 +2,7 @@
 {% block content %}
     <h1>Concerts Near Me</h1>
     <div>
-        <ul class="list-group">
+        <ul class="list-group striped-list">
             {% if not events %}
                 <h4>No concerts found.
                     <a href="{{url_for('home')}}">Please try another search.</a>
@@ -12,11 +12,11 @@
                     <li class="list-group-item">{{ event[1] }} 
                         <br> Date: {{ event[3] }} 
                         <br> Location: {{ event[4] }}
-                        <br> Tickets: <a target="_blank" href="{{event[2]}}">{{ event[2] }}</a>
-                        <br> 
-                        <form action="{{url_for('add_to_schedule')}}" method="GET">
-                            <input hidden name="text" value="{{event[0]}}">
-                            <input type="submit" value="Add to Schedule">
+                        <br>
+                        <button type="button" class="btn-info" onclick="window.open('{{event[2]}}', 'popUpWindow','height=800,width=1200,left=10,top=10,scrollbars=yes,menubar=no'); return false;">Tickets</button>
+                        <form action="{{url_for('add_to_schedule')}}" method="GET" style='display:inline;'>
+                            <input hidden name="event" value="{{event[0]}}">
+                            <input type="submit" class="btn-primary" value="Add to Schedule">
                         </form>
                 {% endfor %}
             {% endif %}

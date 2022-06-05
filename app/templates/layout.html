@@ -13,6 +13,8 @@
         {% endif %}
     </head>
     <body>
+        <div id="fb-root"></div>
+        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v14.0" nonce="5u3Q41jH"></script>
         <nav class="navbar navbar-expand-lg navbar-dark bg-steel fixed-top">
             <div class="container-fluid">
                 <a class="navbar-brand" href="/">Concerts Near Me</a>
@@ -30,6 +32,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('schedule') }}">Schedule</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('saved_artists') }}">Saved Artists</a>
+                        </li>
                         {% if current_user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('account') }}">Account</a>
@@ -46,10 +51,6 @@
                             </li>
                         {% endif %}
                     </ul>
-                    <form class="d-flex">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
-                    </form>
                 </div>
             </div>
         </nav>
@@ -68,28 +69,57 @@
                         {% endwith %}
                         {% block content %}{% endblock %}
                     </div>
-                    <div class="col-md-4">
-                        <div class="content-section">
-                            <h3>Sidebar</h3>
-                            <p class="text-muted">Any info here.
-                                <ul>
-                                    <li>Item 1</li>
-                                    <li>Item 2</li>
-                                    <li>Item 3</li>
-                                    <li>Item 4</li>
-                                </ul>
-                            </p>
-                        </div>
-                    </div>
                 </div>
             </main>
         </div>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.js"></script>
-        <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script type="module">
             import Tags from "https://cdn.jsdelivr.net/gh/lekoala/bootstrap5-tags@master/tags.js";
             Tags.init("select");
           </script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <script>
+            $(".remove-artist").on("submit", function(e){
+                e.preventDefault();
+                var artist = $(this).parent().siblings("th").text()
+                $.ajax({
+                url: "/remove-artist",
+                type: "post",
+                data: {artist: artist}
+                });
+                $(this).parent().parent().remove();
+                return false;
+            });
+        </script>
+        <script>
+            $(".remove-event").on("submit", function(e){
+                e.preventDefault();
+                var event = $(this).children("input").val()
+                $.ajax({
+                url: "/remove-event",
+                type: "post",
+                data: {event: event}
+                });
+                $(this).parent().parent().parent().remove();
+                return false;
+            });
+        </script>
+        <script>window.twttr = (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0],
+              t = window.twttr || {};
+            if (d.getElementById(id)) return t;
+            js = d.createElement(s);
+            js.id = id;
+            js.src = "https://platform.twitter.com/widgets.js";
+            fjs.parentNode.insertBefore(js, fjs);
+          
+            t._e = [];
+            t.ready = function(f) {
+              t._e.push(f);
+            };
+          
+            return t;
+          }(document, "script", "twitter-wjs"));</script>
     </body>
 </html>

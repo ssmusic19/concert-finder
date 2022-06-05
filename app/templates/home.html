@@ -5,6 +5,7 @@
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Find Concerts Near Me</legend>
+                <h4 class="text-center">Filter by city or zip code:</h4>
                 <div class="form-group">
                     {{ form.city.label(class="form-control-label") }}
 
@@ -19,6 +20,13 @@
                         {{ form.city(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
+                {% if current_user.is_authenticated %}
+                <div class="form-check">
+                    {{ form.save_city(class="form-check-input") }}
+                    {{ form.save_city.label(class="form-check-label") }}
+                </div>
+                {% endif %}
+                <span>or</span>
                 <div class="form-group">
                     {{ form.zipcode.label(class="form-control-label") }}
 
@@ -33,11 +41,13 @@
                         {{ form.zipcode(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
+                </br>
+                <h4 class="text-center">Filter by artist:</h4>
                 <div class="form-group">
                     {{ form.artists.label(class="form-control-label") }}
 
                     {% if form.artists.errors %}
-                        {{ form.artists(class="form-control form-control-lg is-invalid") }}
+                        {{ form.artists(class="form-control form-control-lg is-invalid", **{"data-allow-clear":"true", "data-allow-new":"true"}) }}
                         <div class="invalid-feedback">
                             {% for error in form.artists.errors %}
                                 <span>{{ error }}</span>
@@ -47,6 +57,51 @@
                         {{ form.artists(class="form-control form-control-lg", **{"data-allow-clear":"true", "data-allow-new":"true"}) }}
                     {% endif %}
                 </div>
+                {% if current_user.is_authenticated %}
+                    <span>or</span>
+                    <div class="form-check">
+                        {{ form.search_saved_artists(class="form-check-input") }}
+                        {{ form.search_saved_artists.label(class="form-check-label") }}
+                    </div>
+                    <div class="form-check">
+                        {{ form.save_artists(class="form-check-input") }}
+                        {{ form.save_artists.label(class="form-check-label") }}
+                    </div>
+                {% else %}
+                    <a class="link-primary" href="{{ url_for('login') }}">Login to enable Saved Artist Searches and more!</a>
+                    </br>
+                {% endif %}
+                </br>
+                <h4 class="text-center">Filter by date:</h4>
+                <div class="form-group">
+                    {{ form.start_date.label(class="form-control-label") }}
+
+                    {% if form.start_date.errors %}
+                        {{ form.start_date(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.start_date.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.start_date(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.end_date.label(class="form-control-label") }}
+
+                    {% if form.end_date.errors %}
+                        {{ form.end_date(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.end_date.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.end_date(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                </br>
             </fieldset>
             <div class="form-group">
                 {{ form.submit(class="btn btn-outline-info") }}

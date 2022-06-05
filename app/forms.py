@@ -3,8 +3,8 @@ from flask import url_for
 from app import app
 from flask_wtf.file import FileField, FileAllowed
 from flask_login import current_user
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectMultipleField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectMultipleField, DateField
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, Optional
 from app.models import User
 import json
 
@@ -55,26 +55,43 @@ class ConcertForm(FlaskForm):
 
     def validate(self, extra_validators=None):
         if super().validate(extra_validators):
-            if not (self.city.data or self.zipcode.data):
-                self.city.errors.append('City or Zipcode must be provided.')
-                self.zipcode.errors.append('City or Zipcode must be provided.')
+            if self.city.data and self.zipcode.data:
+                error_msg = 'Search using city or zip code, but not both.'
+                self.city.errors.append(error_msg)
+                self.zipcode.errors.append(error_msg)
                 return False
+            if not (self.artists.data or self.search_saved_artists.data or self.city.data or self.zipcode.data):
+                error_msg = 'Search must include city, zipcode, or artists.'
+                self.city.errors.append(error_msg)
+                self.zipcode.errors.append(error_msg)
+                self.artists.errors.append(error_msg)
             else:
                 return True
         return False
 
-    """with app.open_resource('static/performers.txt') as file:
-        i = 0
-        for line in file:
-            line = line.decode("utf-8")
-            my_choices.append(line.rstrip())
-            i += 1
-            if i > 30000:
-                break
-    """
     with app.open_resource('static/artists.json') as file:
         my_choices = json.load(file)
     my_choices = list(my_choices.keys())
 
-    artists = SelectMultipleField('Enter artists:', validators=[DataRequired()], choices = my_choices, validate_choice=False)
+    artists = SelectMultipleField('Enter artists:', choices = my_choices, validate_choice=False)
+    search_saved_artists = BooleanField('Search using saved artists')
+    save_artists = BooleanField('Add artists from search field to saved artists')
+    save_city = BooleanField('Save city for future searches', default='checked')
+    start_date = DateField('Enter start date:', validators=[Optional()])
+    end_date = DateField('Enter end date:', validators=[Optional()])
     submit = SubmitField('Find Concerts')
+
+class RequestResetForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Request Password Reset')
+
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if user is None:
+            raise ValidationError('There is no account with that email. You must register first.')
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Reset Password')
+    
